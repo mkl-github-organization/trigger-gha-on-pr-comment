@@ -7,9 +7,6 @@
 <!--- Why is this change required? What problem does it solve? -->
 
 
-
-- [ ] `terraform apply`  succeed :checkered_flag:
-
 ----
 
 #### Type of change
