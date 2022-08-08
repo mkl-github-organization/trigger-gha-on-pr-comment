@@ -14,9 +14,6 @@ on:
   issue_comment:
     types: [created, edited]
 # env values will be overwritten in first job
-env:
-  EVENT_NAME: NOOP
-  COMMENT_BODY: NOTHING
 
 jobs:
   prepare-gha-context:
@@ -36,6 +33,9 @@ jobs:
   pr-comment:
     needs: prepare-gha-context
     runs-on: ubuntu-latest
+    env:
+      EVENT_NAME: NOOP
+      COMMENT_BODY: NOTHING
     if: ${{ env.EVENT_NAME == issue_comment ) }}
     steps:
       - name: normal-pr-comment
@@ -45,6 +45,9 @@ jobs:
   pr-comment-ok:
     needs: prepare-gha-context
     runs-on: ubuntu-latest
+    env:
+      EVENT_NAME: NOOP
+      COMMENT_BODY: NOTHING
     if: ${{ env.EVENT_NAME == issue_comment ) }} && contains(${{env.COMMENT_BODY}} 'ok') }}
     steps:
       - name: ok-pr-comment
