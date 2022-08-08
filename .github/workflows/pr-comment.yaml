@@ -17,33 +17,38 @@ on:
 jobs:
   prepare-gha-context:
     runs-on: ubuntu-latest
+    env:
+      EVENT_NAME: ${{env.EVENT_NAME}}
+      COMMENT_BODY: ${{env.COMMENT_BODY}}
+
     steps:
-      - name: extract GH context
+      - name: extract GH context into environment variables
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: |
           EVENT_NAME=$(echo "$GITHUB_CONTEXT" |  jq -r .event_name )
           COMMENT_BODY=$(echo "$GITHUB_CONTEXT" | jq -r .event.comment.body )
+          echo "EVENT_NAME=${EVENT_NAME} >> $GITHUB_ENV"
+          echo "COMMENT_BODY=${COMMENT_BODY} >> $GITHUB_ENV"
           echo "Got this GH event:$EVENT_NAME: with this comment:$COMMENT_BODY:"
-          echo "$GITHUB_CONTEXT"
+          # echo "$GITHUB_CONTEXT"
 
   pr-comment:
-    if: ${{ (github.event.issue.comment.body != null ) }}
     runs-on: ubuntu-latest
+    if: ${{ env.EVENT_NAME == issue_comment ) }}
     steps:
       - name: normal-pr-comment
         run: |
-          echo "Saw comment PR comment."
-          echo "${{github.event.comment.body}}"
+          echo "Saw comment PR comment :${{env.COMMENT_BODY}}:"
 
   pr-comment-ok:
-    if: ${{ (github.event.issue.comment.body != null ) && contains(github.event.comment.body, 'ok') }}
+    if: ${{ env.EVENT_NAME == issue_comment ) }} && contains(${{env.COMMENT_BODY}} 'ok') }}
     runs-on: ubuntu-latest
     steps:
       - name: ok-pr-comment
         run: |
-          echo "Saw comment 'ok'!"
-          echo "${{github.event.comment.body}}"
+          echo "Saw OK-comment :${{env.COMMENT_BODY}}:"
+          echo "Going to set GHA trigger"
 
 # on: issue_comment
 
