@@ -52,7 +52,7 @@ jobs:
   triggker-on-pr-comment:
     needs: [prepare-gha-context, check-pr-comment]
     runs-on: ubuntu-latest
-    if:  contains(needs.prepare-gha-context.outputs.comment_body, 'ok') )
+    if:  contains(needs.prepare-gha-context.outputs.comment_body, 'ok')
     steps:
       - name: ok-pr-comment
         run: |
