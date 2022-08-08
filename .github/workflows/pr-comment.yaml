@@ -15,13 +15,17 @@ on:
     types: [created, edited]
 
 jobs:
-  gha-context:
+  prepare-gha-context:
     runs-on: ubuntu-latest
     steps:
-      - name: show GH context
+      - name: extract GH context
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
+        run: |
+          EVENT_NAME=$(echo "$GITHUB_CONTEXT" |  jq -r .event_name )
+          COMMENT_BODY=$(echo "$GITHUB_CONTEXT" | jq -r .event.comment.body )
+          echo "Got this GH event:$EVENT_NAME: with this comment:$COMMENT_BODY:"
+          echo "$GITHUB_CONTEXT"
 
   pr-comment:
     if: ${{ (github.event.issue.comment.body != null ) }}
