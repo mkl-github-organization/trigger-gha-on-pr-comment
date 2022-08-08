@@ -21,8 +21,8 @@ jobs:
   prepare-gha-context:
     runs-on: ubuntu-latest
     outputs:
-      event_name: ${{step.identify.outputs.event_name}}
-      comment_body: ${{step.identify.outputs.comment_body}}
+      event_name: ${{steps.identify.outputs.event_name}}
+      comment_body: ${{steps.identify.outputs.comment_body}}
     steps:
       - name: extract GH context into outpu
         id: identify
