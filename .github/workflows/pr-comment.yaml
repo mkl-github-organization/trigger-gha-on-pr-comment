@@ -49,7 +49,7 @@ jobs:
         run: |
           echo "Saw comment PR comment :${{ needs.prepare-gha-context.outputs.event_name}}:"
 
-  triggker-on-pr-comment:
+  trigger-on-pr-comment:
     needs: [prepare-gha-context, check-pr-comment]
     runs-on: ubuntu-latest
     if:  contains(needs.prepare-gha-context.outputs.comment_body, 'ok')
