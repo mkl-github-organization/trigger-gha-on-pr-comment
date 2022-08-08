@@ -37,7 +37,7 @@ jobs:
           echo "::set-output name=comment_body::${COMMENT_BODY}"
 
           echo "Got this GH event:$EVENT_NAME: with this comment:$COMMENT_BODY:"
-          EVENT=$(echo GITHUB_CONTEXT" |jq -r .event)
+          EVENT=$(echo $GITHUB_CONTEXT |jq -r .event)
           echo "$EVENT"
 
   pr-comment:
