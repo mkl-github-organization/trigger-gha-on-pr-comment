@@ -36,7 +36,7 @@ jobs:
     env:
       EVENT_NAME: NOOP
       COMMENT_BODY: NOTHING
-    if: ${{ env.EVENT_NAME == issue_comment ) }}
+    if: $EVENT_NAME == issue_comment
     steps:
       - name: normal-pr-comment
         run: |
@@ -48,7 +48,7 @@ jobs:
     env:
       EVENT_NAME: NOOP
       COMMENT_BODY: NOTHING
-    if: ${{ env.EVENT_NAME == issue_comment ) }} && contains(${{env.COMMENT_BODY}} 'ok') }}
+    if: ( $EVENT_NAME == issue_comment  && contains($COMMENT_BODY}} 'ok'))
     steps:
       - name: ok-pr-comment
         run: |
