@@ -9,50 +9,52 @@
 name: PR commented
 
 # See: https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#pull_request_review_comment
-# GHA runs even on non-default branches
+# Use job outputs as in https://docs.github.com/en/actions/using-jobs/defining-outputs-for-jobs#overview
+
+### ONLY RUNS IF FILE IS DEFAULT BRANCH ###
 on:
   issue_comment:
     types: [created, edited]
-# env values will be overwritten in first job
 
 jobs:
+  # extract GHA context and prepare output for other jobs
   prepare-gha-context:
     runs-on: ubuntu-latest
+    outputs:
+      event_name: ${{step.identify.outputs.event_name}}
+      comment_body: ${{step.identify.outputs.comment_body}}
     steps:
-      - name: extract GH context into environment variables
+      - name: extract GH context into outpu
+        id: identify
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: |
-          EVENT_NAME=$(echo "$GITHUB_CONTEXT" |  jq -r .event_name )
-          COMMENT_BODY=$(echo "$GITHUB_CONTEXT" | jq -r .event.comment.body )
-          echo "EVENT_NAME=${EVENT_NAME} >> $GITHUB_ENV"
-          echo "COMMENT_BODY=${COMMENT_BODY} >> $GITHUB_ENV"
+          # use jq to extract into bash variables
+          export EVENT_NAME=$(echo "$GITHUB_CONTEXT" |  jq -r .event_name )
+          export COMMENT_BODY=$(echo "$GITHUB_CONTEXT" | jq -r .event.comment.body )
+
+          echo "::set-output name=event_name::${EVENT_NAME}"
+          echo "::set-output name=comment_body::${COMMENT_BODY}"
+
           echo "Got this GH event:$EVENT_NAME: with this comment:$COMMENT_BODY:"
           # echo "$GITHUB_CONTEXT"
 
   pr-comment:
-    needs: prepare-gha-context
     runs-on: ubuntu-latest
-    env:
-      EVENT_NAME: NOOP
-      COMMENT_BODY: NOTHING
-    if: $EVENT_NAME == issue_comment
+    if: ${{ needs.job.prepare-gha-context.outputs.event_name}} == issue_comment
     steps:
       - name: normal-pr-comment
         run: |
-          echo "Saw comment PR comment :${{env.COMMENT_BODY}}:"
+          echo "Saw comment PR comment :${{ needs.job.prepare-gha-context.outputs.event_name}}:"
 
   pr-comment-ok:
     needs: prepare-gha-context
     runs-on: ubuntu-latest
-    env:
-      EVENT_NAME: NOOP
-      COMMENT_BODY: NOTHING
-    if: ( $EVENT_NAME == issue_comment  && contains($COMMENT_BODY}} 'ok'))
+    if: ( ${{ needs.job.prepare-gha-context.outputs.event_name}} == issue_comment && ${{ contains(needs.job.prepare-gha-context.outputs.comment_body, 'ok') }}
     steps:
       - name: ok-pr-comment
         run: |
-          echo "Saw OK-comment :${{env.COMMENT_BODY}}:"
+          echo "Saw OK-comment :${{needs.job.prepare-gha-context.outputs.comment_body}}:"
           echo "Going to set GHA trigger"
 
 # on: issue_comment
