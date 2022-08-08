@@ -15,6 +15,14 @@ on:
     types: [created, edited]
 
 jobs:
+  gha-context:
+    runs-on: ubuntu-latest
+    steps:
+      - name: show GH context
+        env:
+          GITHUB_CONTEXT: ${{ github }}
+        run: echo "$GITHUB_CONTEXT"
+
   pr-comment:
     if: ${{ (github.event.issue.comment.body ) }}
     runs-on: ubuntu-latest
