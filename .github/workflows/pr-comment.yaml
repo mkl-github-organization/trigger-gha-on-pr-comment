@@ -51,7 +51,7 @@ jobs:
   pr-comment-ok:
     needs: prepare-gha-context
     runs-on: ubuntu-latest
-    if: ( ${{ needs.prepare-gha-context.outputs.event_name}} == issue_comment && ${{ contains(needs.prepare-gha-context.outputs.comment_body, 'ok') }}
+    if: ( ${{ needs.prepare-gha-context.outputs.event_name }} == issue_comment &&  contains(needs.prepare-gha-context.outputs.comment_body, 'ok') )
     steps:
       - name: ok-pr-comment
         run: |
