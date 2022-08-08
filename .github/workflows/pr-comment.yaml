@@ -16,7 +16,7 @@ on:
 
 jobs:
   pr-comment:
-    if: ${{ (github.event.issue.pull_request != null) }}
+    if: ${{ (github.event.issue.comment != null) }}
     runs-on: ubuntu-latest
     steps:
       - name: Print
@@ -24,7 +24,7 @@ jobs:
           echo "Saw comment PR comment."
 
   pr-comment-ok:
-    if: ${{ (github.event.issue.pull_request != null) && contains(github.event.comment.body, 'ok') }}
+    if: ${{ (github.event.issue.comment != null) && contains(github.event.comment.body, 'ok') }}
     runs-on: ubuntu-latest
     steps:
       - name: Print
