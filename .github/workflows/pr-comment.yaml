@@ -41,20 +41,21 @@ jobs:
 
   pr-comment:
     runs-on: ubuntu-latest
-    if: ${{ needs.job.prepare-gha-context.outputs.event_name}} == issue_comment
+    needs: prepare-gha-context
+    if: ${{ needs.prepare-gha-context.outputs.event_name}} == issue_comment
     steps:
       - name: normal-pr-comment
         run: |
-          echo "Saw comment PR comment :${{ needs.job.prepare-gha-context.outputs.event_name}}:"
+          echo "Saw comment PR comment :${{ needs.prepare-gha-context.outputs.event_name}}:"
 
   pr-comment-ok:
     needs: prepare-gha-context
     runs-on: ubuntu-latest
-    if: ( ${{ needs.job.prepare-gha-context.outputs.event_name}} == issue_comment && ${{ contains(needs.job.prepare-gha-context.outputs.comment_body, 'ok') }}
+    if: ( ${{ needs.prepare-gha-context.outputs.event_name}} == issue_comment && ${{ contains(needs.prepare-gha-context.outputs.comment_body, 'ok') }}
     steps:
       - name: ok-pr-comment
         run: |
-          echo "Saw OK-comment :${{needs.job.prepare-gha-context.outputs.comment_body}}:"
+          echo "Saw OK-comment :${{needs.prepare-gha-context.outputs.comment_body}}:"
           echo "Going to set GHA trigger"
 
 # on: issue_comment
