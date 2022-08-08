@@ -24,7 +24,7 @@ jobs:
         run: echo "$GITHUB_CONTEXT"
 
   pr-comment:
-    if: ${{ (github.event.issue.comment.body ) }}
+    if: ${{ (github.event.issue.comment.body != null ) }}
     runs-on: ubuntu-latest
     steps:
       - name: normal-pr-comment
@@ -33,7 +33,7 @@ jobs:
           echo "${{github.event.comment.body}}"
 
   pr-comment-ok:
-    if: ${{ (github.event.issue.comment.body ) && contains(github.event.comment.body, 'ok') }}
+    if: ${{ (github.event.issue.comment.body != null ) && contains(github.event.comment.body, 'ok') }}
     runs-on: ubuntu-latest
     steps:
       - name: ok-pr-comment
