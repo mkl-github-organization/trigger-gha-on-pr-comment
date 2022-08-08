@@ -10,7 +10,9 @@ name: PR commented
 
 # See: https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#pull_request_review_comment
 # GHA runs even on non-default branches
-on: pull_request_review_comment
+on:
+  issue_comment:
+    types: [created, edited]
 
 jobs:
   pr-comment:
