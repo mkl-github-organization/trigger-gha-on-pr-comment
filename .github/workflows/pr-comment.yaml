@@ -13,14 +13,14 @@ name: PR commented
 on:
   issue_comment:
     types: [created, edited]
+# env values will be overwritten in first job
+env:
+  EVENT_NAME: NOOP
+  COMMENT_BODY: NOTHING
 
 jobs:
   prepare-gha-context:
     runs-on: ubuntu-latest
-    env:
-      EVENT_NAME: ${{env.EVENT_NAME}}
-      COMMENT_BODY: ${{env.COMMENT_BODY}}
-
     steps:
       - name: extract GH context into environment variables
         env:
@@ -34,6 +34,7 @@ jobs:
           # echo "$GITHUB_CONTEXT"
 
   pr-comment:
+    needs: prepare-gha-context
     runs-on: ubuntu-latest
     if: ${{ env.EVENT_NAME == issue_comment ) }}
     steps:
@@ -42,8 +43,9 @@ jobs:
           echo "Saw comment PR comment :${{env.COMMENT_BODY}}:"
 
   pr-comment-ok:
-    if: ${{ env.EVENT_NAME == issue_comment ) }} && contains(${{env.COMMENT_BODY}} 'ok') }}
+    needs: prepare-gha-context
     runs-on: ubuntu-latest
+    if: ${{ env.EVENT_NAME == issue_comment ) }} && contains(${{env.COMMENT_BODY}} 'ok') }}
     steps:
       - name: ok-pr-comment
         run: |
